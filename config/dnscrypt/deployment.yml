@@ -1,0 +1,45 @@
+apiVersion: apps/v1 # for versions before 1.9.0 use apps/v1beta2
+kind: Deployment
+metadata:
+  name: dnscrypt-proxy
+spec:
+  selector:
+    matchLabels:
+      app: dnscrypt-proxy
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: dnscrypt-proxy
+    spec:
+      containers:
+        - name: dnscrypt
+          image: klutchell/dnscrypt-proxy:latest
+          ports:
+          - containerPort: 5353
+            protocol: UDP
+          volumeMounts:
+          - mountPath: /config
+            name: dnscrypt-proxy-config
+            readOnly: true
+      volumes:
+        - name: dnscrypt-proxy-config
+          secret:
+            secretName: dnscrypt-proxy-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: dnscrypt-proxy
+  labels:
+    app: dnscrypt-proxy
+spec:
+  type: LoadBalancer
+  selector:
+    app: dnscrypt-proxy
+  ports:
+  - name: dnscrypt-proxy
+    port: 53
+    targetPort: 5353
+    protocol: UDP
+---

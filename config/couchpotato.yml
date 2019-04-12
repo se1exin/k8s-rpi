@@ -1,0 +1,99 @@
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: couchpotato-config-pvc
+  annotations:
+    volume.beta.kubernetes.io/storage-class: "managed-nfs-storage"
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 5Gi
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: couchpotato-downloads-pvc
+  annotations:
+    volume.beta.kubernetes.io/storage-class: "managed-nfs-storage"
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 5Gi
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: couchpotato-movies-pvc
+  annotations:
+    volume.beta.kubernetes.io/storage-class: "managed-nfs-storage"
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 5Gi
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: couchpotato
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: couchpotato
+    spec:
+      containers:
+      - name: couchpotato
+        image: linuxserver/couchpotato
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 5050
+        env:
+        - name: PGID
+          value: "1000"
+        - name: PUID
+          value: "1000"
+        volumeMounts:
+        - name: couchpotato
+          mountPath: /config
+        - name: localtime
+          mountPath: /etc/localtime
+        - name: couchpotato-downloads
+          mountPath: /downloads
+        - name: couchpotato-movies
+          mountPath: /movies
+      volumes:
+      - name: couchpotato
+        persistentVolumeClaim:
+          claimName: couchpotato-config-pvc
+      - name: couchpotato-downloads
+        persistentVolumeClaim:
+          claimName: couchpotato-downloads-pvc
+      - name: couchpotato-movies
+        persistentVolumeClaim:
+          claimName: couchpotato-movies-pvc
+      - name: localtime
+        hostPath:
+          path: /etc/localtime
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: couchpotato
+  labels:
+    app: couchpotato
+    kubernetes.io/name: "couchpotato"
+spec:
+  type: LoadBalancer
+  selector:
+    app: couchpotato
+  ports:
+  - name: couchpotato
+    port: 80
+    targetPort: 5050
