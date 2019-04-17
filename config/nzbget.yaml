@@ -1,53 +1,46 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: couchpotato
+  name: nzbget
 spec:
   replicas: 1
   template:
     metadata:
       labels:
-        app: couchpotato
+        app: nzbget
     spec:
       volumes:
-      # Couchpotato config files (stored on USB stick on pi)
-      - name: nfs-couchpotato
+      # nzbget config files (stored on USB stick on pi)
+      - name: nfs-nzbget
         nfs: 
           server: 10.1.1.100
-          path: /mnt/usb01/couchpotato-config
+          path: /mnt/usb01/nzbget-config
 
       # Downloaded Files
       - name: nfs-downloads
         nfs: 
           server: 10.1.1.9
-          path: /media/nzbget-k8s/completed/Movies
+          path: /media/nzbget-k8s
 
-      # Movies Files
-      - name: nfs-movies
-        nfs: 
-          server: 10.1.1.9
-          path: /media/Movies/Movies
       - name: localtime
         hostPath:
           path: /etc/localtime
       containers:
-      - name: couchpotato
-        image: linuxserver/couchpotato
+      - name: nzbget
+        image: linuxserver/nzbget
         imagePullPolicy: Always
         ports:
-        - containerPort: 5050
+        - containerPort: 6789
         env:
         - name: PGID
           value: "1000"
         - name: PUID
           value: "1000"
         volumeMounts:
-        - name: nfs-couchpotato
+        - name: nfs-nzbget
           mountPath: /config
         - name: nfs-downloads
           mountPath: /downloads
-        - name: nfs-movies
-          mountPath: /movies
         - name: localtime
           mountPath: /etc/localtime
       
@@ -55,15 +48,27 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: couchpotato
+  name: nzbget
   labels:
-    app: couchpotato
-    kubernetes.io/name: "couchpotato"
+    app: nzbget
+    kubernetes.io/name: "nzbget"
 spec:
   type: LoadBalancer
   selector:
-    app: couchpotato
+    app: nzbget
   ports:
-  - name: couchpotato
+  - name: nzbget
     port: 80
-    targetPort: 5050
+    targetPort: 6789
+---
+# Internal Service for comms inside cluster
+kind: Service
+apiVersion: v1
+metadata:
+  name: nzbget-internal
+spec:
+  selector:
+    app: nzbget
+  ports:
+  - protocol: TCP
+    port: 6789

@@ -1,53 +1,53 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: couchpotato
+  name: sonarr
 spec:
   replicas: 1
   template:
     metadata:
       labels:
-        app: couchpotato
+        app: sonarr
     spec:
       volumes:
-      # Couchpotato config files (stored on USB stick on pi)
-      - name: nfs-couchpotato
+      # sonarr config files (stored on USB stick on pi)
+      - name: nfs-sonarr
         nfs: 
           server: 10.1.1.100
-          path: /mnt/usb01/couchpotato-config
+          path: /mnt/usb01/sonarr-config
 
       # Downloaded Files
       - name: nfs-downloads
         nfs: 
           server: 10.1.1.9
-          path: /media/nzbget-k8s/completed/Movies
+          path: /media/nzbget-k8s
 
-      # Movies Files
-      - name: nfs-movies
+      # TV Files
+      - name: nfs-tv
         nfs: 
           server: 10.1.1.9
-          path: /media/Movies/Movies
+          path: /media/TV/TV
       - name: localtime
         hostPath:
           path: /etc/localtime
       containers:
-      - name: couchpotato
-        image: linuxserver/couchpotato
+      - name: sonarr
+        image: linuxserver/sonarr
         imagePullPolicy: Always
         ports:
-        - containerPort: 5050
+        - containerPort: 8989
         env:
         - name: PGID
           value: "1000"
         - name: PUID
           value: "1000"
         volumeMounts:
-        - name: nfs-couchpotato
+        - name: nfs-sonarr
           mountPath: /config
         - name: nfs-downloads
           mountPath: /downloads
-        - name: nfs-movies
-          mountPath: /movies
+        - name: nfs-tv
+          mountPath: /tv
         - name: localtime
           mountPath: /etc/localtime
       
@@ -55,15 +55,15 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: couchpotato
+  name: sonarr
   labels:
-    app: couchpotato
-    kubernetes.io/name: "couchpotato"
+    app: sonarr
+    kubernetes.io/name: "sonarr"
 spec:
   type: LoadBalancer
   selector:
-    app: couchpotato
+    app: sonarr
   ports:
-  - name: couchpotato
+  - name: sonarr
     port: 80
-    targetPort: 5050
+    targetPort: 8989
