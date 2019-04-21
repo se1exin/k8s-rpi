@@ -105,6 +105,8 @@ spec:
           # If not specified, Dashboard will attempt to auto discover the API server and connect
           # to it. Uncomment only if the default does not work.
           # - --apiserver-host=http://my-address:port
+          - --enable-skip-login=true
+          - --disable-settings-authorizer=true
         volumeMounts:
           # Create on-disk volume to store exec logs
         - mountPath: /tmp
@@ -142,19 +144,19 @@ spec:
   selector:
     k8s-app: kubernetes-dashboard
 ---
-# apiVersion: rbac.authorization.k8s.io/v1beta1
-# kind: ClusterRoleBinding
-# metadata:
-#   name: kubernetes-dashboard
-#   labels:
-#     k8s-app: kubernetes-dashboard
-# roleRef:
-#   apiGroup: rbac.authorization.k8s.io
-#   kind: ClusterRole
-#   name: cluster-admin
-# subjects:
-# - kind: ServiceAccount
-#   name: kubernetes-dashboard
-#   namespace: kube-system
-# ---
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRoleBinding
+metadata:
+  name: kubernetes-dashboard
+  labels:
+    k8s-app: kubernetes-dashboard
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: cluster-admin
+subjects:
+- kind: ServiceAccount
+  name: kubernetes-dashboard
+  namespace: kube-system
+---
 
