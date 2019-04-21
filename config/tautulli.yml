@@ -1,0 +1,53 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: tautulli
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: tautulli
+    spec:
+      volumes:
+      # tautulli config files (stored on USB stick on pi)
+      - name: nfs-tautulli
+        nfs: 
+          server: 10.1.1.100
+          path: /mnt/usb01/tautulli-config
+      - name: localtime
+        hostPath:
+          path: /etc/localtime
+      containers:
+      - name: tautulli
+        image: linuxserver/tautulli
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8181
+        env:
+        - name: PGID
+          value: "1000"
+        - name: PUID
+          value: "1000"
+        volumeMounts:
+        - name: nfs-tautulli
+          mountPath: /config
+        - name: localtime
+          mountPath: /etc/localtime
+      
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: tautulli
+  labels:
+    app: tautulli
+    kubernetes.io/name: "tautulli"
+spec:
+  type: LoadBalancer
+  selector:
+    app: tautulli
+  ports:
+  - name: tautulli
+    port: 80
+    targetPort: 8181
