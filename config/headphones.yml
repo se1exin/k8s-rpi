@@ -1,0 +1,69 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: headphones
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: headphones
+    spec:
+      volumes:
+      # headphones config files (stored on USB stick on pi)
+      - name: nfs-headphones
+        nfs: 
+          server: 10.1.1.100
+          path: /mnt/usb01/headphones-config
+
+      # Downloaded Files
+      - name: nfs-downloads
+        nfs: 
+          server: 10.1.1.9
+          path: /media/nzbget-k8s/completed/Music
+
+      # Music Files
+      - name: nfs-music
+        nfs: 
+          server: 10.1.1.9
+          path: /media/Music
+      - name: localtime
+        hostPath:
+          path: /etc/localtime
+      containers:
+      - name: headphones
+        image: linuxserver/headphones
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8181
+        env:
+        - name: PGID
+          value: "1000"
+        - name: PUID
+          value: "1000"
+        volumeMounts:
+        - name: nfs-headphones
+          mountPath: /config
+        - name: nfs-downloads
+          mountPath: /downloads
+        - name: nfs-music
+          mountPath: /music
+        - name: localtime
+          mountPath: /etc/localtime
+      
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: headphones
+  labels:
+    app: headphones
+    kubernetes.io/name: "headphones"
+spec:
+  type: LoadBalancer
+  selector:
+    app: headphones
+  ports:
+  - name: headphones
+    port: 80
+    targetPort: 8181
