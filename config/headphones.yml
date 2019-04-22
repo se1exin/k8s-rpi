@@ -4,6 +4,8 @@ metadata:
   name: headphones
 spec:
   replicas: 1
+  strategy:
+    type: Recreate
   template:
     metadata:
       labels:
@@ -53,10 +55,10 @@ spec:
         resources:
           requests:
             memory: "150Mi"
-            cpu: "300m"
+            cpu: "500m"
           limits:
             memory: "200Mi"
-            cpu: "500m"
+            cpu: "600m"
 ---
 apiVersion: v1
 kind: Service

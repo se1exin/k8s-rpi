@@ -4,6 +4,8 @@ metadata:
   name: tautulli
 spec:
   replicas: 1
+  strategy:
+    type: Recreate
   template:
     metadata:
       labels:
@@ -37,10 +39,10 @@ spec:
         resources:
           requests:
             memory: "100Mi"
-            cpu: "150m"
+            cpu: "400m"
           limits:
             memory: "150Mi"
-            cpu: "250m"
+            cpu: "600m"
       
 ---
 apiVersion: v1

@@ -4,6 +4,8 @@ metadata:
   name: nzbget
 spec:
   replicas: 1
+  strategy:
+    type: Recreate
   template:
     metadata:
       labels:
@@ -46,10 +48,10 @@ spec:
         resources:
           requests:
             memory: "300Mi"
-            cpu: "400m"
+            cpu: "1500m"
           limits:
             memory: "500Mi"
-            cpu: "750m"
+            cpu: "2000m"
       
 ---
 apiVersion: v1
