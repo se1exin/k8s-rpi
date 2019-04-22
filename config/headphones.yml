@@ -50,7 +50,13 @@ spec:
           mountPath: /music
         - name: localtime
           mountPath: /etc/localtime
-      
+        resources:
+          requests:
+            memory: "150Mi"
+            cpu: "300m"
+          limits:
+            memory: "200Mi"
+            cpu: "500m"
 ---
 apiVersion: v1
 kind: Service

@@ -43,6 +43,13 @@ spec:
           mountPath: /downloads
         - name: localtime
           mountPath: /etc/localtime
+        resources:
+          requests:
+            memory: "500Mi"
+            cpu: "400m"
+          limits:
+            memory: "750Mi"
+            cpu: "750m"
       
 ---
 apiVersion: v1

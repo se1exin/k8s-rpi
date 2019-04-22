@@ -22,6 +22,13 @@ spec:
           - mountPath: /config
             name: dnscrypt-proxy-config
             readOnly: true
+          resources:
+            requests:
+              memory: "150Mi"
+              cpu: "300m"
+            limits:
+              memory: "200Mi"
+              cpu: "500m"
       volumes:
         - name: dnscrypt-proxy-config
           secret:
