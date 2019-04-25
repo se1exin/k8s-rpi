@@ -54,11 +54,11 @@ spec:
           mountPath: /etc/localtime
         resources:
           requests:
-            memory: "250Mi"
-            cpu: "1000m"
-          limits:
             memory: "350Mi"
-            cpu: "1200m"
+            cpu: "750m"
+          limits:
+            memory: "400Mi"
+            cpu: "1000m"
 ---
 apiVersion: v1
 kind: Service
