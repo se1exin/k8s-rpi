@@ -15,8 +15,8 @@ spec:
       # headphones config files (stored on USB stick on pi)
       - name: nfs-headphones
         nfs: 
-          server: 10.1.1.100
-          path: /mnt/usb01/headphones-config
+          server: 10.1.1.9
+          path: /media/NFS/headphones-config
 
       # Downloaded Files
       - name: nfs-downloads

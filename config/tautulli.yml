@@ -15,8 +15,8 @@ spec:
       # tautulli config files (stored on USB stick on pi)
       - name: nfs-tautulli
         nfs: 
-          server: 10.1.1.100
-          path: /mnt/usb01/tautulli-config
+          server: 10.1.1.9
+          path: /media/NFS/tautulli-config
       - name: localtime
         hostPath:
           path: /etc/localtime

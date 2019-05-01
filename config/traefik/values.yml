@@ -1,0 +1,29 @@
+dashboard:
+  enabled: true
+  domain: traefik.k8s.selexin.com
+kubernetes:
+  namespaces:
+    - default
+    - kube-system
+debug:
+  enabled: true
+rbac:
+  enabled: true
+ssl:
+  enabled: true
+acme:
+  enabled: true
+  staging: true
+  onHostRule: true
+  email: selexin@selexin.com
+  challengeType: dns-01
+  dnsProvider:
+    name: vultr
+    existingSecretName: vultr-api-token
+  domains:
+    enabled: false
+    domainsList:
+      - main: "*.k8s.selexin.com"
+  persistence:
+    enabled: true
+    existingClaim: traefik-nfs-pvc

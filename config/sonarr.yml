@@ -15,8 +15,8 @@ spec:
       # sonarr config files (stored on USB stick on pi)
       - name: nfs-sonarr
         nfs: 
-          server: 10.1.1.100
-          path: /mnt/usb01/sonarr-config
+          server: 10.1.1.9
+          path: /media/NFS/sonarr-config
 
       # Downloaded Files
       - name: nfs-downloads
@@ -55,10 +55,10 @@ spec:
         resources:
           requests:
             memory: "350Mi"
-            cpu: "750m"
+            cpu: "1200m"
           limits:
-            memory: "400Mi"
-            cpu: "1000m"
+            memory: "600Mi"
+            cpu: "2000m"
 ---
 apiVersion: v1
 kind: Service

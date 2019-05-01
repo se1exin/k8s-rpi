@@ -15,8 +15,8 @@ spec:
       # Couchpotato config files (stored on USB stick on pi)
       - name: nfs-couchpotato
         nfs: 
-          server: 10.1.1.100
-          path: /mnt/usb01/couchpotato-config
+          server: 10.1.1.9
+          path: /media/NFS/couchpotato-config
 
       # Downloaded Files
       - name: nfs-downloads
