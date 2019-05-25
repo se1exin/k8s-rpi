@@ -87,7 +87,6 @@
       "steppedLine": false,
       "targets": [
         {
-          "$$hashKey": "object:10467",
           "alias": "Usage",
           "groupBy": [
             {
@@ -137,7 +136,6 @@
           ]
         },
         {
-          "$$hashKey": "object:10468",
           "alias": "Limit",
           "groupBy": [
             {
@@ -187,7 +185,6 @@
           ]
         },
         {
-          "$$hashKey": "object:10469",
           "alias": "Request",
           "groupBy": [
             {
@@ -256,7 +253,6 @@
       },
       "yaxes": [
         {
-          "$$hashKey": "object:10653",
           "format": "percent",
           "label": "CPU Usage %",
           "logBase": 1,
@@ -265,7 +261,6 @@
           "show": true
         },
         {
-          "$$hashKey": "object:10654",
           "format": "short",
           "label": null,
           "logBase": 1,
@@ -330,7 +325,6 @@
       "steppedLine": false,
       "targets": [
         {
-          "$$hashKey": "object:10467",
           "alias": "Usage",
           "groupBy": [
             {
@@ -380,7 +374,6 @@
           ]
         },
         {
-          "$$hashKey": "object:10468",
           "alias": "Limit",
           "groupBy": [
             {
@@ -430,7 +423,6 @@
           ]
         },
         {
-          "$$hashKey": "object:10469",
           "alias": "Request",
           "groupBy": [
             {
@@ -499,7 +491,6 @@
       },
       "yaxes": [
         {
-          "$$hashKey": "object:10653",
           "format": "percent",
           "label": "CPU Usage %",
           "logBase": 1,
@@ -508,7 +499,6 @@
           "show": true
         },
         {
-          "$$hashKey": "object:10654",
           "format": "short",
           "label": null,
           "logBase": 1,
@@ -526,7 +516,7 @@
       "datasource": "influxdb-datasource",
       "fill": 1,
       "gridPos": {
-        "h": 4,
+        "h": 5,
         "w": 12,
         "x": 0,
         "y": 6
@@ -573,7 +563,6 @@
       "steppedLine": false,
       "targets": [
         {
-          "$$hashKey": "object:10467",
           "alias": "Usage",
           "groupBy": [
             {
@@ -623,7 +612,6 @@
           ]
         },
         {
-          "$$hashKey": "object:10468",
           "alias": "Limit",
           "groupBy": [
             {
@@ -673,7 +661,6 @@
           ]
         },
         {
-          "$$hashKey": "object:10469",
           "alias": "Request",
           "groupBy": [
             {
@@ -742,7 +729,6 @@
       },
       "yaxes": [
         {
-          "$$hashKey": "object:10653",
           "format": "percent",
           "label": "CPU Usage %",
           "logBase": 1,
@@ -751,7 +737,6 @@
           "show": true
         },
         {
-          "$$hashKey": "object:10654",
           "format": "short",
           "label": null,
           "logBase": 1,
@@ -769,7 +754,7 @@
       "datasource": "influxdb-datasource",
       "fill": 1,
       "gridPos": {
-        "h": 4,
+        "h": 5,
         "w": 12,
         "x": 12,
         "y": 6
@@ -816,7 +801,6 @@
       "steppedLine": false,
       "targets": [
         {
-          "$$hashKey": "object:10467",
           "alias": "Usage",
           "groupBy": [
             {
@@ -866,7 +850,6 @@
           ]
         },
         {
-          "$$hashKey": "object:10468",
           "alias": "Limit",
           "groupBy": [
             {
@@ -916,7 +899,6 @@
           ]
         },
         {
-          "$$hashKey": "object:10469",
           "alias": "Request",
           "groupBy": [
             {
@@ -985,7 +967,6 @@
       },
       "yaxes": [
         {
-          "$$hashKey": "object:10653",
           "format": "percent",
           "label": "CPU Usage %",
           "logBase": 1,
@@ -994,7 +975,6 @@
           "show": true
         },
         {
-          "$$hashKey": "object:10654",
           "format": "short",
           "label": null,
           "logBase": 1,
@@ -1010,7 +990,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 10
+        "y": 11
       },
       "id": 24,
       "panels": [],
@@ -1028,7 +1008,7 @@
         "h": 5,
         "w": 12,
         "x": 0,
-        "y": 11
+        "y": 12
       },
       "id": 17,
       "interval": ">60s",
@@ -1280,7 +1260,7 @@
         "h": 5,
         "w": 12,
         "x": 12,
-        "y": 11
+        "y": 12
       },
       "id": 16,
       "interval": ">60s",
@@ -1532,7 +1512,7 @@
         "h": 5,
         "w": 12,
         "x": 0,
-        "y": 16
+        "y": 17
       },
       "id": 15,
       "interval": ">60s",
@@ -1784,7 +1764,7 @@
         "h": 5,
         "w": 12,
         "x": 12,
-        "y": 16
+        "y": 17
       },
       "id": 14,
       "interval": ">60s",
@@ -2067,5 +2047,5 @@
   "timezone": "",
   "title": "K8s Node Overview",
   "uid": "z7yyC8ZRz",
-  "version": 11
+  "version": 13
 }
