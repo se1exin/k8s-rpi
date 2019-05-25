@@ -30,7 +30,7 @@ spec:
       containers:
       - name: nzbget
         image: linuxserver/nzbget
-        imagePullPolicy: Always
+        # imagePullPolicy: Always
         ports:
         - containerPort: 6789
         env:

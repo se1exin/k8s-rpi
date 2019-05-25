@@ -1,7 +1,7 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: headphones
+  name: lidarr
 spec:
   replicas: 1
   strategy:
@@ -9,14 +9,14 @@ spec:
   template:
     metadata:
       labels:
-        app: headphones
+        app: lidarr
     spec:
       volumes:
-      # headphones config files (stored on USB stick on pi)
-      - name: nfs-headphones
+      # lidarr config files (stored on USB stick on pi)
+      - name: nfs-lidarr
         nfs: 
           server: 10.1.1.9
-          path: /media/NFS/headphones-config
+          path: /media/NFS/lidarr-config
 
       # Downloaded Files
       - name: nfs-downloads
@@ -29,49 +29,48 @@ spec:
         nfs: 
           server: 10.1.1.9
           path: /media/Music
-      - name: localtime
-        hostPath:
-          path: /etc/localtime
+
       containers:
-      - name: headphones
-        image: linuxserver/headphones
+      - name: lidarr
+        image: linuxserver/lidarr:latest
         imagePullPolicy: Always
+        # imagePullPolicy: IfNotPresent
         ports:
-        - containerPort: 8181
+        - containerPort: 8686
         env:
         - name: PGID
           value: "1000"
         - name: PUID
           value: "1000"
+        - name: TZ
+          value: Australia/Sydney
         volumeMounts:
-        - name: nfs-headphones
+        - name: nfs-lidarr
           mountPath: /config
         - name: nfs-downloads
           mountPath: /downloads
         - name: nfs-music
           mountPath: /music
-        - name: localtime
-          mountPath: /etc/localtime
-        resources:
-          requests:
-            memory: "80Mi"
-            cpu: "150m"
-          limits:
-            memory: "100Mi"
-            cpu: "200m"
+        # resources:
+        #   requests:
+        #     memory: "350Mi"
+        #     cpu: "1200m"
+        #   limits:
+        #     memory: "600Mi"
+        #     cpu: "2000m"
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: headphones
+  name: lidarr
   labels:
-    app: headphones
-    kubernetes.io/name: "headphones"
+    app: lidarr
+    kubernetes.io/name: "lidarr"
 spec:
   type: LoadBalancer
   selector:
-    app: headphones
+    app: lidarr
   ports:
-  - name: headphones
+  - name: lidarr
     port: 80
-    targetPort: 8181
+    targetPort: 8686

@@ -24,6 +24,7 @@ spec:
       - name: tautulli
         image: linuxserver/tautulli
         imagePullPolicy: Always
+        # imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 8181
         env:

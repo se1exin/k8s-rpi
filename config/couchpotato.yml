@@ -35,7 +35,8 @@ spec:
       containers:
       - name: couchpotato
         image: linuxserver/couchpotato
-        imagePullPolicy: Always
+        # imagePullPolicy: Always
+        imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 5050
         env:

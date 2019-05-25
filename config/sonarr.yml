@@ -29,13 +29,11 @@ spec:
         nfs: 
           server: 10.1.1.9
           path: /media/TV/TV
-      - name: localtime
-        hostPath:
-          path: /etc/localtime
       containers:
       - name: sonarr
-        image: linuxserver/sonarr
+        image: linuxserver/sonarr:latest
         imagePullPolicy: Always
+        # imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 8989
         env:
@@ -43,6 +41,8 @@ spec:
           value: "1000"
         - name: PUID
           value: "1000"
+        - name: TZ
+          value: Australia/Sydney
         volumeMounts:
         - name: nfs-sonarr
           mountPath: /config
@@ -50,14 +50,12 @@ spec:
           mountPath: /downloads
         - name: nfs-tv
           mountPath: /tv
-        - name: localtime
-          mountPath: /etc/localtime
         resources:
           requests:
             memory: "350Mi"
             cpu: "1200m"
           limits:
-            memory: "600Mi"
+            memory: "400Mi"
             cpu: "2000m"
 ---
 apiVersion: v1
