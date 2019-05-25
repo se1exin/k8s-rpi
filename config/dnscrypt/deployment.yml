@@ -24,11 +24,11 @@ spec:
             readOnly: true
           resources:
             requests:
-              memory: "30Mi"
-              cpu: "30m"
+              memory: "15Mi"
+              cpu: "80m"
             limits:
-              memory: "50Mi"
-              cpu: "50m"
+              memory: "25Mi"
+              cpu: "100m"
       volumes:
         - name: dnscrypt-proxy-config
           secret:

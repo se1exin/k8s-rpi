@@ -22,7 +22,7 @@ spec:
           name: ca-certificates
           readOnly: true
         - mountPath: /var
-          name: grafana-storage
+          name: nfs-grafana-storage
         env:
         - name: INFLUXDB_HOST
           value: monitoring-influxdb
@@ -46,8 +46,10 @@ spec:
       - name: ca-certificates
         hostPath:
           path: /etc/ssl/certs
-      - name: grafana-storage
-        emptyDir: {}
+      - name: nfs-grafana-storage
+        nfs: 
+          server: 10.1.1.9
+          path: /media/NFS/grafana-storage
 ---
 apiVersion: v1
 kind: Service
