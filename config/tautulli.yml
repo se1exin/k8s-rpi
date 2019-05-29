@@ -23,8 +23,8 @@ spec:
       containers:
       - name: tautulli
         image: linuxserver/tautulli
-        imagePullPolicy: Always
-        # imagePullPolicy: IfNotPresent
+        # imagePullPolicy: Always
+        imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 8181
         env:
@@ -39,10 +39,10 @@ spec:
           mountPath: /etc/localtime
         resources:
           requests:
-            memory: "150Mi"
+            memory: "50Mi"
             cpu: "50m"
           limits:
-            memory: "180Mi"
+            memory: "80Mi"
             cpu: "100m"
       
 ---

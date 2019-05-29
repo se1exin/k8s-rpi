@@ -32,8 +32,8 @@ spec:
       containers:
       - name: sonarr
         image: linuxserver/sonarr:latest
-        imagePullPolicy: Always
-        # imagePullPolicy: IfNotPresent
+        # imagePullPolicy: Always
+        imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 8989
         env:
@@ -50,6 +50,18 @@ spec:
           mountPath: /downloads
         - name: nfs-tv
           mountPath: /tv
+        readinessProbe:
+          httpGet:
+            path: /api/system/status?apikey=healthcheck
+            port: 8989
+          initialDelaySeconds: 10
+          periodSeconds: 5
+        livenessProbe:
+          httpGet:
+            path: /api/system/status?apikey=healthcheck
+            port: 8989
+          initialDelaySeconds: 30
+          periodSeconds: 5
         resources:
           requests:
             memory: "350Mi"

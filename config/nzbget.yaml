@@ -30,7 +30,7 @@ spec:
       containers:
       - name: nzbget
         image: linuxserver/nzbget
-        # imagePullPolicy: Always
+        imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 6789
         env:
@@ -45,12 +45,24 @@ spec:
           mountPath: /downloads
         - name: localtime
           mountPath: /etc/localtime
+        readinessProbe:
+          httpGet:
+            path: /jsonrpc/status
+            port: 6789
+          initialDelaySeconds: 10
+          periodSeconds: 5
+        livenessProbe:
+          httpGet:
+            path: /jsonrpc/status
+            port: 6789
+          initialDelaySeconds: 30
+          periodSeconds: 5
         resources:
           requests:
-            memory: "350Mi"
+            memory: "350M"
             cpu: "1000m"
           limits:
-            memory: "500Mi"
+            memory: "350M"
             cpu: "1500m"
       
 ---

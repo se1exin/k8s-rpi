@@ -22,7 +22,7 @@ spec:
       - name: nfs-downloads
         nfs: 
           server: 10.1.1.9
-          path: /media/nzbget-k8s/completed/Music
+          path: /media/nzbget-k8s
 
       # Music Files
       - name: nfs-music
@@ -33,8 +33,8 @@ spec:
       containers:
       - name: lidarr
         image: linuxserver/lidarr:latest
-        imagePullPolicy: Always
-        # imagePullPolicy: IfNotPresent
+        # imagePullPolicy: Always
+        imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 8686
         env:
@@ -51,13 +51,25 @@ spec:
           mountPath: /downloads
         - name: nfs-music
           mountPath: /music
-        # resources:
-        #   requests:
-        #     memory: "350Mi"
-        #     cpu: "1200m"
-        #   limits:
-        #     memory: "600Mi"
-        #     cpu: "2000m"
+        readinessProbe:
+          httpGet:
+            path: /api/v1/system/status?apikey=healthcheck
+            port: 8686
+          initialDelaySeconds: 10
+          periodSeconds: 5
+        livenessProbe:
+          httpGet:
+            path: /api/v1/system/status?apikey=healthcheck
+            port: 8686
+          initialDelaySeconds: 30
+          periodSeconds: 5
+        resources:
+          requests:
+            memory: "260M"
+            cpu: "600m"
+          limits:
+            memory: "300M"
+            cpu: "1000m"
 ---
 apiVersion: v1
 kind: Service
