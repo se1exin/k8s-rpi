@@ -1,7 +1,7 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: lidarr
+  name: radarr
 spec:
   replicas: 1
   strategy:
@@ -9,14 +9,13 @@ spec:
   template:
     metadata:
       labels:
-        app: lidarr
+        app: radarr
     spec:
       volumes:
-      # lidarr config files (stored on USB stick on pi)
-      - name: nfs-lidarr
+      - name: nfs-radarr
         nfs: 
           server: 10.1.1.9
-          path: /media/NFS/lidarr-config
+          path: /media/NFS/radarr-config
 
       # Downloaded Files
       - name: nfs-downloads
@@ -24,19 +23,18 @@ spec:
           server: 10.1.1.9
           path: /media/nzbget-k8s
 
-      # Music Files
-      - name: nfs-music
+      # Movies
+      - name: nfs-movies
         nfs: 
           server: 10.1.1.9
-          path: /media/Music
-
+          path: /media/Movies/Movies
       containers:
-      - name: lidarr
-        image: linuxserver/lidarr:latest
+      - name: radarr
+        image: linuxserver/radarr:latest
         # imagePullPolicy: Always
         imagePullPolicy: IfNotPresent
         ports:
-        - containerPort: 8686
+        - containerPort: 7878
         env:
         - name: PGID
           value: "1000"
@@ -45,59 +43,59 @@ spec:
         - name: TZ
           value: Australia/Sydney
         volumeMounts:
-        - name: nfs-lidarr
+        - name: nfs-radarr
           mountPath: /config
         - name: nfs-downloads
           mountPath: /downloads
-        - name: nfs-music
-          mountPath: /music
+        - name: nfs-movies
+          mountPath: /movies
         readinessProbe:
           httpGet:
-            path: /api/v1/system/status?apikey=healthcheck
-            port: 8686
+            path: /api/system/status?apikey=healthcheck
+            port: 7878
           initialDelaySeconds: 10
           periodSeconds: 5
           timeoutSeconds: 3
         livenessProbe:
           httpGet:
-            path: /api/v1/system/status?apikey=healthcheck
-            port: 8686
+            path: /api/system/status?apikey=healthcheck
+            port: 7878
           initialDelaySeconds: 30
-          periodSeconds: 5
-          timeoutSeconds: 3
+          periodSeconds: 60
+          timeoutSeconds: 10
         resources:
           requests:
-            memory: "150M"
-            cpu: "600m"
+            memory: "200M"
+            cpu: "1200m"
           limits:
-            memory: "180M"
-            cpu: "1000m"
+            memory: "250M"
+            cpu: "2000m"
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: lidarr
+  name: radarr
   labels:
-    app: lidarr
-    kubernetes.io/name: "lidarr"
+    app: radarr
+    kubernetes.io/name: "radarr"
 spec:
   selector:
-    app: lidarr
+    app: radarr
   ports:
-  - name: lidarr
+  - name: radarr
     port: 80
-    targetPort: 8686
+    targetPort: 7878
 ---
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: lidarr-ingress
+  name: radarr-ingress
 spec:
   rules:
-  - host: lidarr.k8s.selexin.com
+  - host: radarr.k8s.selexin.com
     http:
       paths:
       - path: /
         backend:
-          serviceName: lidarr
+          serviceName: radarr
           servicePort: 80

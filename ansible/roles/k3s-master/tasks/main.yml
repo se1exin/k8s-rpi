@@ -1,0 +1,41 @@
+---
+- name: Set Master IP Address Fact
+  set_fact:
+    master_ip: "{{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }}"
+    cacheable: yes
+
+- name: Install Latest k3s
+  shell: curl -sfL https://get.k3s.io | sh -
+
+- name: Wait for node-token
+  wait_for:
+    path: /var/lib/rancher/k3s/server/node-token
+
+- name: Read node-token from master
+  slurp:
+    src: /var/lib/rancher/k3s/server/node-token
+  register: node_token_b64
+
+- name: Set Node Token Fact
+  set_fact: 
+    node_token: "{{ node_token_b64.content | b64decode | regex_replace('\n', '') }}"
+    cacheable: yes
+
+- name: Create directory .kube
+  file:
+    path: /home/{{ ansible_user }}/.kube
+    state: directory
+    owner: "{{ ansible_user }}"
+
+- name: Copy config file to user home directory
+  copy:
+    src: /etc/rancher/k3s/k3s.yaml
+    dest: /home/{{ ansible_user }}/.kube/config
+    remote_src: yes
+    owner: "{{ ansible_user }}"
+
+- name: Replace https://localhost:6443 by https://master-pi:6443
+  replace:
+    path: /home/{{ ansible_user }}/.kube/config
+    regexp: "https://127.0.0.1:6443"
+    replace: "https://{{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }}:6443"

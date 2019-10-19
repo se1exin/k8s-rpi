@@ -1,0 +1,28 @@
+---
+- name: Initialize Raspberry Pis
+  hosts: all
+  remote_user: pi
+  become: yes
+  become_user: root
+
+  roles:
+    - { role: raspbian-init }
+    - { role: sysupdate }
+
+- name: Provision Master Node
+  hosts: master
+  remote_user: pi
+  become: yes
+  become_user: root
+
+  roles:
+    - { role: k3s-master }
+
+- name: Provision Worker Nodes
+  hosts: nodes
+  remote_user: pi
+  become: yes
+  become_user: root
+
+  roles:
+    - { role: k3s-node }

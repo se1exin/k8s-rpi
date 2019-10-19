@@ -12,21 +12,30 @@ spec:
         app: hue-im-home
     spec:
       volumes:
+      - name: localtime
+        hostPath:
+          path: /etc/localtime
       - name: nfs-hue-im-home
         nfs: 
           server: 10.1.1.9
           path: /media/NFS/hue-config
       containers:
       - name: hue-im-home
-        image: selexin/hue-im-home:latest
+        image: selexin/hue-im-home:arm32v7-latest
         imagePullPolicy: Always
         env:
         - name: IP_RANGE
           value: "10.1.1.11-20"
         - name: BRIDGE_IP
-          value: "10.1.1.10"
+          value: "10.1.1.12"
+        - name: ON_TIME_RANGE
+          value: "16:00-22:00"
+        - name: OFF_TIME_RANGE
+          value: "08:30-10:00"
         # - name: DEVICE_TYPE
         #   value: "ios"
         volumeMounts:
         - name: nfs-hue-im-home
           mountPath: /config
+        - name: localtime
+          mountPath: /etc/localtime

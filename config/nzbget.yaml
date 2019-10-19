@@ -51,18 +51,20 @@ spec:
             port: 6789
           initialDelaySeconds: 10
           periodSeconds: 5
+          timeoutSeconds: 3
         livenessProbe:
           httpGet:
             path: /jsonrpc/status
             port: 6789
           initialDelaySeconds: 30
-          periodSeconds: 5
+          periodSeconds: 60
+          timeoutSeconds: 10
         resources:
           requests:
-            memory: "350M"
+            memory: "300M"
             cpu: "1000m"
           limits:
-            memory: "350M"
+            memory: "320M"
             cpu: "1500m"
       
 ---
@@ -74,13 +76,26 @@ metadata:
     app: nzbget
     kubernetes.io/name: "nzbget"
 spec:
-  type: LoadBalancer
   selector:
     app: nzbget
   ports:
   - name: nzbget
     port: 80
     targetPort: 6789
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: nzbget-ingress
+spec:
+  rules:
+  - host: nzbget.k8s.selexin.com
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: nzbget
+          servicePort: 80
 ---
 # Internal Service for comms inside cluster
 kind: Service

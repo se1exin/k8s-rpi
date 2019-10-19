@@ -39,10 +39,10 @@ spec:
           mountPath: /etc/localtime
         resources:
           requests:
-            memory: "50Mi"
+            memory: "50M"
             cpu: "50m"
           limits:
-            memory: "80Mi"
+            memory: "80M"
             cpu: "100m"
       
 ---
@@ -54,10 +54,23 @@ metadata:
     app: tautulli
     kubernetes.io/name: "tautulli"
 spec:
-  type: LoadBalancer
   selector:
     app: tautulli
   ports:
   - name: tautulli
     port: 80
     targetPort: 8181
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: tautulli-ingress
+spec:
+  rules:
+  - host: tautulli.k8s.selexin.com
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: tautulli
+          servicePort: 80

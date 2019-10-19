@@ -1,7 +1,7 @@
 [master]
-k8s-master
+rstack-node0
 
 [nodes]
-k8s-node1
-k8s-node2
-k8s-node3
+rstack-node1
+rstack-node2
+rstack-node3

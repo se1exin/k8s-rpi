@@ -39,7 +39,7 @@ metadata:
     kubernetes.io/tls-acme: 'true'
 spec:
   rules:
-  - host: test.k8s.selexin.com
+  - host: test.rstack.selexin.com
     http:
       paths:
       - path: /
@@ -49,4 +49,4 @@ spec:
   tls:
   - secretName: nginx-ingress-tls-cert
     hosts:
-      - 'test.k8s.selexin.com'
+      - 'test.rstack.selexin.com'

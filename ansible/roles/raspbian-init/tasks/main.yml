@@ -1,0 +1,30 @@
+---
+- name: Set GPU memory split to 16 MB
+  lineinfile:
+    path: /boot/config.txt
+    line: 'gpu_mem=16'
+    create: yes
+
+- name: Add cgroup directives to boot commandline config
+  lineinfile:
+    path: /boot/cmdline.txt
+    regexp: '((.)+?)(\scgroup_\w+=\w+)*$'
+    line: '\1 cgroup_enable=cpuset cgroup_memory=1 cgroup_enable=memory'
+    backrefs: yes
+
+- name: Point hostname to localhost (k3s requirement)
+  lineinfile:
+    path: /etc/hosts
+    line: "127.0.0.1 {{inventory_hostname}}"
+
+- name: Set hostname to inventory hostname
+  hostname: name={{inventory_hostname}}
+
+- name: Ensure US locale exists
+  locale_gen:
+    name: en_US.UTF-8
+    state: present
+
+- name: Reboot the node
+  reboot:
+    reboot_timeout: 300

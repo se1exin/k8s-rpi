@@ -56,18 +56,20 @@ spec:
             port: 8989
           initialDelaySeconds: 10
           periodSeconds: 5
-        livenessProbe:
-          httpGet:
-            path: /api/system/status?apikey=healthcheck
-            port: 8989
-          initialDelaySeconds: 30
-          periodSeconds: 5
+          timeoutSeconds: 3
+        # livenessProbe:
+        #   httpGet:
+        #     path: /api/system/status?apikey=healthcheck
+        #     port: 8989
+        #   initialDelaySeconds: 30
+        #   periodSeconds: 5
+        #   timeoutSeconds: 3
         resources:
           requests:
-            memory: "350Mi"
+            memory: "200M"
             cpu: "1200m"
           limits:
-            memory: "400Mi"
+            memory: "250M"
             cpu: "2000m"
 ---
 apiVersion: v1
@@ -78,10 +80,23 @@ metadata:
     app: sonarr
     kubernetes.io/name: "sonarr"
 spec:
-  type: LoadBalancer
   selector:
     app: sonarr
   ports:
   - name: sonarr
     port: 80
     targetPort: 8989
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: sonarr-ingress
+spec:
+  rules:
+  - host: sonarr.k8s.selexin.com
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: sonarr
+          servicePort: 80

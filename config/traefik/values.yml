@@ -23,7 +23,7 @@ acme:
   domains:
     enabled: false
     domainsList:
-      - main: "*.k8s.selexin.com"
+      - main: "*.rstack.selexin.com"
   persistence:
     enabled: true
     existingClaim: traefik-nfs-pvc

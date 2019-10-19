@@ -64,7 +64,7 @@ metadata:
 spec:
   # In a production setup, we recommend accessing Grafana through an external Loadbalancer
   # or through a public IP.
-  type: LoadBalancer
+  # type: LoadBalancer
   # You could also use NodePort to expose the service at a randomly-generated port
   # type: NodePort
   ports:
@@ -72,3 +72,18 @@ spec:
     targetPort: 3000
   selector:
     k8s-app: grafana
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: monitoring-grafana
+  namespace: kube-system
+spec:
+  rules:
+  - host: grafana.k8s.selexin.com
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: monitoring-grafana
+          servicePort: 80
