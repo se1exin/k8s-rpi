@@ -1,6 +1,5 @@
 dashboard:
-  enabled: true
-  domain: traefik.rstack.selexin.dev
+  enabled: false
 kubernetes:
   namespaces:
     - default
