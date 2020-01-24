@@ -1,0 +1,35 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: mqtt-influxdb-bridge-deployment
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: mqtt-influxdb-bridge
+    spec:
+      containers:
+      - name: mqtt-influxdb-bridge
+        image: selexin/mqtt-influxdb-bridge:latest
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: INFLUXDB_ADDRESS
+          value: "influxdb-service"
+        - name: INFLUXDB_USER
+          value: "root"
+        - name: INFLUXDB_PASSWORD
+          value: "root"
+        - name: INFLUXDB_DATABASE
+          value: "home_iot"
+        - name: MQTT_ADDRESS
+          value: "mosquitto-service"
+        - name: MQTT_TOPIC
+          value: "home/+/+"
+        - name: MQTT_REGEX
+          value: "home/([^/]+)/([^/]+)"
+        - name: MQTT_CLIENT_ID
+          value: "MQTTInfluxDBBridge"
+

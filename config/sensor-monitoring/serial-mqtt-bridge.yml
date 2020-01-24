@@ -1,0 +1,35 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: serial-mqtt-bridge-deployment
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: serial-mqtt-bridge
+    spec:
+      volumes:
+      - name: serial
+        hostPath:
+          path: /dev/ttyS0
+      nodeSelector:
+        xbee-serial: "true"
+      containers:
+      - name: serial-mqtt-bridge
+        image: selexin/serial-mqtt-bridge:latest
+        imagePullPolicy: Always
+        volumeMounts:
+        - name: serial
+          mountPath: /dev/ttyS0
+        securityContext:
+          privileged: true
+        env:
+        - name: MQTT_ADDRESS
+          value: "mosquitto-service"
+        - name: MQTT_CLIENT_ID
+          value: "SerialMQTTBridge"
+        - name: SERIAL_BAUD_RATE
+          value: "9600"

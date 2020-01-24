@@ -1,0 +1,58 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: mosquitto-deployment
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: mosquitto
+    spec:
+      volumes:
+      - name: nfs-mosquitto-config
+        nfs: 
+          server: 10.1.1.100
+          path: /mnt/nfsserver/mosquitto/config
+      - name: nfs-mosquitto-data
+        nfs: 
+          server: 10.1.1.100
+          path: /mnt/nfsserver/mosquitto/data
+      - name: nfs-mosquitto-log
+        nfs: 
+          server: 10.1.1.100
+          path: /mnt/nfsserver/mosquitto/log
+      containers:
+      - name: mosquitto
+        image: eclipse-mosquitto:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 8086
+        volumeMounts:
+        - name: nfs-mosquitto-config
+          mountPath: /mosquitto/config
+        - name: nfs-mosquitto-data
+          mountPath: /mosquitto/data
+        - name: nfs-mosquitto-log
+          mountPath: /mosquitto/log
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mosquitto-service
+  labels:
+    app: mosquitto
+    kubernetes.io/name: "mosquitto"
+spec:
+  type: LoadBalancer
+  selector:
+    app: mosquitto
+  ports:
+  - name: mosquitto-1883
+    port: 1883
+    targetPort: 1883
+  - name: mosquitto-9001
+    port: 9001
+    targetPort: 9001

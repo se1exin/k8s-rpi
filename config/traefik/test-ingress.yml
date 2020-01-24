@@ -36,17 +36,23 @@ metadata:
   name: nginx-ingress
   annotations:
     kubernetes.io/ingress.class: traefik
-    kubernetes.io/tls-acme: 'true'
+    kubernetes.io/tls-acme: true
 spec:
   rules:
-  - host: test.rstack.selexin.com
+  - host: test.rstack.selexin.dev
     http:
       paths:
       - path: /
         backend:
           serviceName: nginx-service
-          servicePort: web
-  tls:
-  - secretName: nginx-ingress-tls-cert
-    hosts:
-      - 'test.rstack.selexin.com'
+          servicePort: 80
+  - host: ipv4.selexin.dev
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: nginx-service
+          servicePort: 80
+  # tls:
+  # - hosts:
+  #     - 'test.rstack.selexin.dev'

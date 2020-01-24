@@ -1,29 +1,30 @@
 dashboard:
   enabled: true
-  domain: traefik.k8s.selexin.com
+  domain: traefik.rstack.selexin.dev
 kubernetes:
   namespaces:
     - default
     - kube-system
+  ingressEndpoint:
+    useDefaultPublishedService: true
 debug:
-  enabled: true
+  enabled: false
 rbac:
   enabled: true
 ssl:
   enabled: true
 acme:
   enabled: true
-  staging: true
+  staging: false
+  logging: false
+  delayBeforeCheck: 30
   onHostRule: true
   email: selexin@selexin.com
-  challengeType: dns-01
+  challengeType: "dns-01"
   dnsProvider:
-    name: vultr
-    existingSecretName: vultr-api-token
+    name: cloudflare
+    existingSecretName: cloudflare-api-key
   domains:
     enabled: false
-    domainsList:
-      - main: "*.rstack.selexin.com"
   persistence:
-    enabled: true
-    existingClaim: traefik-nfs-pvc
+    enabled: false

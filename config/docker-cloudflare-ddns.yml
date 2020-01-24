@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: docker-cloudflare-ddns
+spec:
+  selector:
+    matchLabels:
+      app: docker-cloudflare-ddns
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: docker-cloudflare-ddns
+    spec:
+      containers:
+      - name: docker-cloudflare-ddns
+        image: oznu/cloudflare-ddns:armhf
+        imagePullPolicy: Always
+        env:
+        - name: ZONE
+          value: selexin.dev
+        # - name: SUBDOMAIN
+        #   value: ipv4
+        - name: EMAIL
+          valueFrom:
+            secretKeyRef:
+              name: cloudflare-api-key
+              key: email
+        - name: API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: cloudflare-api-key
+              key: apikey

@@ -1,0 +1,52 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: influxdb-deployment
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: influxdb
+    spec:
+      volumes:
+      - name: localtime
+        hostPath:
+          path: /etc/localtime
+      - name: nfs-influxdb
+        nfs: 
+          server: 10.1.1.100
+          path: /mnt/nfsserver/influxdb
+      containers:
+      - name: influxdb
+        image: influxdb:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 8086
+        volumeMounts:
+        - name: nfs-influxdb
+          mountPath: /var/lib/influxdb
+        - name: localtime
+          mountPath: /etc/localtime
+        env:
+        - name: INFLUXDB_ADMIN_USER
+          value: "root"
+        - name: INFLUXDB_ADMIN_PASSWORD
+          value: "root"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: influxdb-service
+  labels:
+    app: influxdb
+    kubernetes.io/name: "influxdb"
+spec:
+  selector:
+    app: influxdb
+  ports:
+  - name: influxdb
+    port: 8086
+    targetPort: 8086

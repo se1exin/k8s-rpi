@@ -10,8 +10,8 @@ spec:
     - ReadWriteOnce
   persistentVolumeReclaimPolicy: Recycle
   nfs:
-    server: k8s-master.selexin.com
-    path: /mnt/usb01/traefik-pvc
+    server: 10.1.1.100
+    path: /mnt/nfsserver/traefik-pvc
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim

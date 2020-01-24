@@ -1,0 +1,52 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: prometheus-deployment
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: prometheus
+    spec:
+      volumes:
+      - name: prometheus-config
+        configMap:
+          name: prometheus-config-file
+          items:
+            - key: prometheus-config-file.yml
+              path: prometheus.yml
+      - name: nfs-prometheus
+        nfs: 
+          server: 10.1.1.100
+          path: /mnt/nfsserver/prometheus
+      containers:
+      - name: prometheus
+        image: prom/prometheus:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 9090
+        volumeMounts:
+        - name: nfs-prometheus
+          mountPath: /var/lib/prometheus
+        - name: prometheus-config
+          mountPath: /etc/prometheus
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: prometheus-service
+  labels:
+    app: prometheus
+    kubernetes.io/name: "prometheus"
+spec:
+  selector:
+    app: prometheus
+  ports:
+  - name: prometheus
+    port: 9090
+    targetPort: 9090
+
+    # kubectl create configmap prometheus-config-file --from-file=prometheus-config-file.yml 

@@ -1,0 +1,75 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: grafana-deployment
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: grafana
+    spec:
+      volumes:
+      - name: localtime
+        hostPath:
+          path: /etc/localtime
+      - name: nfs-grafana
+        nfs: 
+          server: 10.1.1.100
+          path: /mnt/nfsserver/grafana
+      containers:
+      - name: grafana
+        image: grafana/grafana:5.4.3
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 3000
+        volumeMounts:
+        - name: nfs-grafana
+          mountPath: /var/lib/grafana
+        - name: localtime
+          mountPath: /etc/localtime
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: grafana-service
+  labels:
+    app: grafana
+    kubernetes.io/name: "grafana"
+spec:
+  selector:
+    app: grafana
+  ports:
+  - name: grafana
+    port: 80
+    targetPort: 3000
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: grafana-ingress
+  annotations:
+    kubernetes.io/ingress.class: traefik
+    kubernetes.io/tls-acme: true
+spec:
+  rules:
+  - host: grafana.rstack.selexin.dev
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: grafana-service
+          servicePort: 80
+  - host: grafana.selexin.dev
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: grafana-service
+          servicePort: 80
+  tls:
+  - hosts:
+      - 'grafana.rstack.selexin.dev'
+      - 'grafana.selexin.dev'
