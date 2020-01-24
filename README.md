@@ -1,36 +1,40 @@
 # K8s RPi
 
-Configs for my Rasbperry Pi Kubernetes Cluster (named "rstack") running [k3s](https://k3s.io/).
+Configs for my Raspberry Pi Kubernetes Cluster (named "rstack") running [k3s](https://k3s.io/).
 
-![Glamour shot of cluster](https://selexin.com/assets/img/2019-04-12-rpi-cluster.jpg)
+Glamour shots of the cluster:
 
+![Glamour shots of the cluster](https://selexin.com/assets/img/2019-04-12-rpi-cluster.jpg)
+
+This is the second iteration of my cluster setup ([I wrote a blog post about my first iteration](https://selexin.com/2019/04/12/kubernetes-on-raspberry-pi-cluster.html)).
+Previously I was using full K8s with MetalLB for load balancing, now I'm using [k3s](https://k3s.io/) with [Traefik](https://docs.traefik.io/).
 
 ## Standing up the Cluster
 The `ansible` folder contains playbooks for provisioning and standing up the cluster, as well
 as for admin tasks such as bulk upgrading system packages.
 
 ### Requirements / Prep steps
- - Install `ansible` and `ansible-playbook`
- - Download and `dd` rasbian onto the rasbperry pi SD cards
- - Mount the `boot` partition of each SD card and `touch` the file `<bootpart>/ssh`
- - Put SD cards into rasberry pis and boot them
- - Accept SSH signatures and enable password-less SSH by running `ssh-copy-id pi@pi-address` on each of the Pis (will help ansible)
- - SSH into each pi and change the password for the `pi` user
- - Add Static IP assignments to your router for each of the Pis (grab their MAC addresses while you are SSH'd in).
+ - Install `ansible` and `ansible-playbook`.
+ - Download and `dd` rasbian onto the Raspberry Pi SD cards.
+ - Mount the `boot` partition of each SD card and `touch` the file `<bootpart>/ssh`.
+ - Put SD cards into Raspberry Pis and boot them.
+ - Accept SSH signatures and enable password-less SSH by running `ssh-copy-id pi@pi-address` on each of the Pis (will help ansible).
+ - SSH into each pi and change the password for the `pi` user.
+ - Add static IP assignments to your router for each of the Pis (grab their MAC addresses while you are SSH'd in).
  - Add each pi as a host in `/etc/hosts` (for ansible)
- - Update `ansible/hosts` with each host name
- - Reboot the pis so they pick up their static IPs. Maybe double check the IPs have been leased properly by SSHing into each at their static IP/hostname
-
-### Installing k3s
-Simply run the ansible playbook and wait:
-```
-ansible-playbook -i ansible/hosts ansible/provision-k3s.yml
-```
+ - Update `ansible/hosts` with each host name.
+ - Reboot the Pis so they pick up their static IPs. Double check the IPs have been leased properly by SSHing into each at their static IP/hostname.
 
 ### Updating OS and Packages
 To perform system updates (which you should to ensure security patches etc are installed), run:
 ```
 ansible-playbook -i ansible/hosts ansible/update-all.yml
+```
+
+### Installing k3s
+Simply run the ansible playbook and wait:
+```
+ansible-playbook -i ansible/hosts ansible/provision-k3s.yml
 ```
 
 ## Post Install
@@ -40,7 +44,7 @@ over to your computer somewhere (e.g. with `rsync`) so you can run `kubectl` com
 
 To set this `kubectl` config as your default config, export the `KUBECONFIG` variable in your `.bashrc` file:
 ```
-export KUBECONFIG=/path/to/.kube
+export KUBECONFIG=/path/to/.kube/config
 ```
 
 Test `kubectl` to check everything is working (don't forget to `source ~/.bashrc`):
@@ -59,7 +63,7 @@ rstack-node3   Ready    worker   91d   v1.15.4-k3s.1
 ### Setting up Traefik (with LetsEncrypt certs working as well)
 [Traefik](https://docs.traefik.io/) works great as an Ingress controller with k3s (I couldn't get ingress-nginx to work).
 
-The LetsEncrypt setup uses DNS validation via Cloudflare, so your domain's DNS needs to hosted with Cloudflare (although other providers do work - see [Traefik's Provider Docs](https://docs.traefik.io/https/acme/#providers).
+The LetsEncrypt setup uses DNS validation via Cloudflare, so your domain's DNS needs to hosted with Cloudflare (although other providers do work - see [Traefik's Provider Docs](https://docs.traefik.io/https/acme/#providers)).
 
 #### Install Helm
 Traefik is installed via helm, so we need to install helm first. Use the helper script:
