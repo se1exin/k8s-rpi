@@ -1,0 +1,47 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: zigbee2mqtt-deployment
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: zigbee2mqtt
+    spec:
+      volumes:
+      - name: serial
+        hostPath:
+          path: /dev/ttyACM0
+      - name: localtime
+        hostPath:
+          path: /etc/localtime
+      - name: udev
+        hostPath:
+          path: /run/udev
+      - name: nfs-zigbee2mqtt
+        nfs: 
+          server: 10.1.1.100
+          path: /mnt/nfsserver/zigbee2mqtt
+      nodeSelector:
+        zigbee2mqtt-usb: "true"
+      containers:
+      - name: zigbee2mqtt-bridge
+        image: koenkk/zigbee2mqtt:latest
+        imagePullPolicy: Always
+        volumeMounts:
+        - name: serial
+          mountPath: /dev/ttyACM0
+        - name: localtime
+          mountPath: /etc/localtime
+        - name: udev
+          mountPath: /run/udev
+        - name: nfs-zigbee2mqtt
+          mountPath: /app/data
+        securityContext:
+          privileged: true
+        env:
+        - name: TZ
+          value: "Australia/Sydney"

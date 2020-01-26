@@ -14,7 +14,7 @@ spec:
       containers:
       - name: mqtt-influxdb-bridge
         image: selexin/mqtt-influxdb-bridge:latest
-        imagePullPolicy: IfNotPresent
+        imagePullPolicy: Always
         env:
         - name: INFLUXDB_ADDRESS
           value: "influxdb-service"
@@ -32,4 +32,8 @@ spec:
           value: "home/([^/]+)/([^/]+)"
         - name: MQTT_CLIENT_ID
           value: "MQTTInfluxDBBridge"
+        - name: MQTT_IGNORE_DEVICES
+          value: "bridge"
+        - name: MQTT_IGNORE_MEASUREMENTS
+          value: "config,status"
 
