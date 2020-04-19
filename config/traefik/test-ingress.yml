@@ -35,8 +35,8 @@ kind: Ingress
 metadata:
   name: nginx-ingress
   annotations:
-    kubernetes.io/ingress.class: traefik
-    kubernetes.io/tls-acme: true
+    kubernetes.io/ingress.class: "traefik"
+    kubernetes.io/tls-acme: "true"
 spec:
   rules:
   - host: test.rstack.selexin.dev
