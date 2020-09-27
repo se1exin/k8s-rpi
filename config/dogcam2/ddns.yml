@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dogcam2-ddns
+spec:
+  selector:
+    matchLabels:
+      app: dogcam2-ddns
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: dogcam2-ddns
+    spec:
+      containers:
+      - name: dogcam2-ddns
+        image: oznu/cloudflare-ddns:armhf
+        imagePullPolicy: Always
+        env:
+        - name: ZONE
+          value: xl4d.xyz
+        - name: SUBDOMAIN
+          value: dogcam2
+        - name: EMAIL
+          valueFrom:
+            secretKeyRef:
+              name: cloudflare-api-key
+              key: email
+        - name: API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: cloudflare-api-key
+              key: apikey

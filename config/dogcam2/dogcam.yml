@@ -1,16 +1,16 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: dogcam-deployment
+  name: dogcam2-deployment
 spec:
   selector:
     matchLabels:
-      app: dogcam
+      app: dogcam2
   replicas: 1
   template:
     metadata:
       labels:
-        app: dogcam
+        app: dogcam2
     spec:
       containers:
       - name: nginx
@@ -18,21 +18,21 @@ spec:
         ports:
         - containerPort: 80
         volumeMounts:
-          - name: dogcam-config
+          - name: dogcam2-config
             mountPath: /etc/nginx/nginx.conf
             subPath: nginx.conf
       volumes:
-      - name: dogcam-config
+      - name: dogcam2-config
         configMap:
-          name: dogcam-nginx-config
+          name: dogcam2-nginx-config
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: dogcam-service
+  name: dogcam2-service
 spec:
   selector:
-    app: dogcam
+    app: dogcam2
   ports:
   - name: web
     port: 80
@@ -41,12 +41,12 @@ spec:
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: dogcam-ingress
+  name: dogcam2-ingress
   annotations:
     kubernetes.io/ingress.class: "traefik"
     kubernetes.io/tls-acme: "true"
     ingress.kubernetes.io/auth-type: "basic"
-    ingress.kubernetes.io/auth-secret: "dogcam-auth"
+    ingress.kubernetes.io/auth-secret: "dogcam2-auth"
     traefik.ingress.kubernetes.io/redirect-entry-point: https
     traefik.ingress.kubernetes.io/rate-limit: |
       extractorfunc: client.ip
@@ -57,13 +57,13 @@ metadata:
           burst: 10
 spec:
   rules:
-  - host: dogcam.xl4d.xyz
+  - host: dogcam2.xl4d.xyz
     http:
       paths:
       - path: /
         backend:
-          serviceName: dogcam-service
+          serviceName: dogcam2-service
           servicePort: 80
   tls:
   - hosts:
-    - 'dogcam.xl4d.xyz'
+    - 'dogcam2.xl4d.xyz'

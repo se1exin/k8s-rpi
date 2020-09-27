@@ -36,4 +36,7 @@ spec:
           value: "bridge"
         - name: MQTT_IGNORE_MEASUREMENTS
           value: "config,status"
-
+        resources:
+          requests:
+            memory: "10Mi"
+            cpu: "10m"

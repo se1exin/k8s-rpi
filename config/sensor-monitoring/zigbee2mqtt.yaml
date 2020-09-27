@@ -45,3 +45,7 @@ spec:
         env:
         - name: TZ
           value: "Australia/Sydney"
+        resources:
+          requests:
+            memory: "120Mi"
+            cpu: "100m"

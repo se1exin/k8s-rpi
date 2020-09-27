@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: plex-proxy-deployment
+spec:
+  selector:
+    matchLabels:
+      app: plex-proxy
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: plex-proxy
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:latest
+        ports:
+        - containerPort: 80
+        volumeMounts:
+          - name: plex-proxy-config
+            mountPath: /etc/nginx/nginx.conf
+            subPath: nginx.conf
+      volumes:
+      - name: plex-proxy-config
+        configMap:
+          name: plex-proxy-nginx-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: plex-proxy-service
+spec:
+  type: LoadBalancer
+  selector:
+    app: plex-proxy
+  ports:
+  - name: web
+    port: 9007
+    targetPort: 80

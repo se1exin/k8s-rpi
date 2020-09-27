@@ -37,6 +37,10 @@ spec:
           mountPath: /mosquitto/data
         - name: nfs-mosquitto-log
           mountPath: /mosquitto/log
+        resources:
+          requests:
+            memory: "25Mi"
+            cpu: "10m"
 ---
 apiVersion: v1
 kind: Service

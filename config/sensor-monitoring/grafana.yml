@@ -30,6 +30,10 @@ spec:
           mountPath: /var/lib/grafana
         - name: localtime
           mountPath: /etc/localtime
+        resources:
+          requests:
+            memory: "50Mi"
+            cpu: "50m"
 ---
 apiVersion: v1
 kind: Service

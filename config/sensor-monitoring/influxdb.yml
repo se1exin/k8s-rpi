@@ -35,6 +35,10 @@ spec:
           value: "root"
         - name: INFLUXDB_ADMIN_PASSWORD
           value: "root"
+        resources:
+          requests:
+            memory: "120Mi"
+            cpu: "100m"
 ---
 apiVersion: v1
 kind: Service

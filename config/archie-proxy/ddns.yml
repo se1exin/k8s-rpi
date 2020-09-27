@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: archie-proxy-ddns
+spec:
+  selector:
+    matchLabels:
+      app: archie-proxy-ddns
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: archie-proxy-ddns
+    spec:
+      containers:
+      - name: archie-proxy-ddns
+        image: oznu/cloudflare-ddns:armhf
+        imagePullPolicy: Always
+        env:
+        - name: ZONE
+          value: xl4d.xyz
+        - name: SUBDOMAIN
+          value: archie-proxy
+        - name: EMAIL
+          valueFrom:
+            secretKeyRef:
+              name: cloudflare-api-key
+              key: email
+        - name: API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: cloudflare-api-key
+              key: apikey

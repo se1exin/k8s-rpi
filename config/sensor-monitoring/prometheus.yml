@@ -33,6 +33,10 @@ spec:
           mountPath: /var/lib/prometheus
         - name: prometheus-config
           mountPath: /etc/prometheus
+        resources:
+          requests:
+            memory: "100Mi"
+            cpu: "25m"
 ---
 apiVersion: v1
 kind: Service

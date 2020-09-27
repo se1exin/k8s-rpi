@@ -33,3 +33,7 @@ spec:
           value: "SerialMQTTBridge"
         - name: SERIAL_BAUD_RATE
           value: "9600"
+        resources:
+          requests:
+            memory: "10Mi"
+            cpu: "10m"

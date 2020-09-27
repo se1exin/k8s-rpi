@@ -1,16 +1,16 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: dogcam-deployment
+  name: archie-proxy-deployment
 spec:
   selector:
     matchLabels:
-      app: dogcam
+      app: archie-proxy
   replicas: 1
   template:
     metadata:
       labels:
-        app: dogcam
+        app: archie-proxy
     spec:
       containers:
       - name: nginx
@@ -18,21 +18,21 @@ spec:
         ports:
         - containerPort: 80
         volumeMounts:
-          - name: dogcam-config
+          - name: archie-proxy-config
             mountPath: /etc/nginx/nginx.conf
             subPath: nginx.conf
       volumes:
-      - name: dogcam-config
+      - name: archie-proxy-config
         configMap:
-          name: dogcam-nginx-config
+          name: archie-proxy-nginx-config
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: dogcam-service
+  name: archie-proxy-service
 spec:
   selector:
-    app: dogcam
+    app: archie-proxy
   ports:
   - name: web
     port: 80
@@ -41,29 +41,27 @@ spec:
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: dogcam-ingress
+  name: archie-proxy-ingress
   annotations:
     kubernetes.io/ingress.class: "traefik"
     kubernetes.io/tls-acme: "true"
-    ingress.kubernetes.io/auth-type: "basic"
-    ingress.kubernetes.io/auth-secret: "dogcam-auth"
     traefik.ingress.kubernetes.io/redirect-entry-point: https
     traefik.ingress.kubernetes.io/rate-limit: |
       extractorfunc: client.ip
       rateset:
         api-rateset:
-          period: 1s
-          average: 2
-          burst: 10
+          period: 5s
+          average: 100
+          burst: 50
 spec:
   rules:
-  - host: dogcam.xl4d.xyz
+  - host: archie-proxy.xl4d.xyz
     http:
       paths:
       - path: /
         backend:
-          serviceName: dogcam-service
+          serviceName: archie-proxy-service
           servicePort: 80
   tls:
   - hosts:
-    - 'dogcam.xl4d.xyz'
+    - 'archie-proxy.xl4d.xyz'

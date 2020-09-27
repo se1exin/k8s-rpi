@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: home-assistant-ddns
+spec:
+  selector:
+    matchLabels:
+      app: home-assistant-ddns
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: home-assistant-ddns
+    spec:
+      containers:
+      - name: home-assistant-ddns
+        image: oznu/cloudflare-ddns:armhf
+        imagePullPolicy: Always
+        env:
+        - name: ZONE
+          value: xl4d.xyz
+        - name: SUBDOMAIN
+          value: hass
+        - name: EMAIL
+          valueFrom:
+            secretKeyRef:
+              name: cloudflare-api-key
+              key: email
+        - name: API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: cloudflare-api-key
+              key: apikey
